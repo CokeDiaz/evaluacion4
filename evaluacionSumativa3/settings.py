@@ -34,6 +34,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -166,3 +167,5 @@ STORAGES = {
 }
 
 CSRF_TRUSTED_ORIGINS = ['https://reservas-django-gd-fefnfdc7fuc0g8ev.centralus-01.azurewebsites.net']
+
+ADMIN_SITE_HEADER = "Administración de Django"
