@@ -13,7 +13,6 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- CSS Personalizado (opcional) -->
     {% if False %}
         <link href="{% static 'css/style.css' %}" rel="stylesheet">
     {% endif %}
@@ -50,6 +49,7 @@
                     <thead class="table-dark">
                         <tr>
                             <th>ID</th>
+                            <th>Imagen</th> <!-- COLUMNA NUEVA PARA S3 -->
                             <th>Nombre</th>
                             <th>Teléfono</th>
                             <th>Fecha</th>
@@ -64,6 +64,18 @@
                         {% for reserva in reservas %}
                         <tr>
                             <td><strong>#{{ reserva.id }}</strong></td>
+                            
+                            <!-- MOSTRAR LA IMAGEN DE AWS S3 -->
+                            <td class="text-center">
+                                {% if reserva.imagen %}
+                                    <a href="{{ reserva.imagen.url }}" target="_blank" title="Ver imagen completa">
+                                        <img src="{{ reserva.imagen.url }}" alt="Foto" class="img-thumbnail shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;">
+                                    </a>
+                                {% else %}
+                                    <span class="badge bg-secondary opacity-50">Sin foto</span>
+                                {% endif %}
+                            </td>
+
                             <td>{{ reserva.nombre_persona }}</td>
                             <td>{{ reserva.telefono }}</td>
                             <td>{{ reserva.fecha_reserva }}</td>
