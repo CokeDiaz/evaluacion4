@@ -173,3 +173,6 @@ STORAGES = {
 CSRF_TRUSTED_ORIGINS = ['https://reservas-django-gd-fefnfdc7fuc0g8ev.centralus-01.azurewebsites.net']
 
 ADMIN_SITE_HEADER = "Administración de Django"
+
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'

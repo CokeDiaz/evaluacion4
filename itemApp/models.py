@@ -57,6 +57,13 @@ class Reserva(models.Model):
         blank=True
     )
 
+    # Nuevo campo para subir la imagen directamente a tu bucket de S3
+    imagen = models.ImageField(
+        upload_to='reservas/',
+        blank=True,
+        null=True
+    )
+
     def __str__(self):
 
         return (

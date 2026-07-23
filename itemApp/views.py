@@ -30,8 +30,10 @@ def crear_reserva_web(request):
 
     if request.method == 'POST':
 
+        # SE AGREGA request.FILES PARA PROCESAR LA IMAGEN
         serializer = ReservaSerializer(
-            data=request.POST
+            data=request.POST,
+            files=request.FILES
         )
 
         if serializer.is_valid():
@@ -47,7 +49,6 @@ def crear_reserva_web(request):
                 'lista_reservas'
             )
 
-
         return render(
             request,
             'itemApp/crear_reserva.html',
@@ -56,7 +57,6 @@ def crear_reserva_web(request):
                 'mesas': mesas
             }
         )
-
 
     return render(
         request,
@@ -76,30 +76,27 @@ def editar_reserva_web(request, reserva_id):
 
     mesas = Mesa.objects.all()
 
-
     if request.method == 'POST':
 
+        # SE AGREGA request.FILES PARA ACTUALIZAR LA IMAGEN
         serializer = ReservaSerializer(
             reserva,
-            data=request.POST
+            data=request.POST,
+            files=request.FILES
         )
-
 
         if serializer.is_valid():
 
             serializer.save()
-
 
             messages.success(
                 request,
                 "La reserva fue modificada correctamente."
             )
 
-
             return redirect(
                 'lista_reservas'
             )
-
 
         return render(
             request,
@@ -110,7 +107,6 @@ def editar_reserva_web(request, reserva_id):
                 'errores': serializer.errors
             }
         )
-
 
     return render(
         request,
@@ -129,22 +125,18 @@ def eliminar_reserva_web(request, reserva_id):
         id=reserva_id
     )
 
-
     if request.method == 'POST':
 
         reserva.delete()
-
 
         messages.success(
             request,
             "La reserva fue eliminada correctamente."
         )
 
-
         return redirect(
             'lista_reservas'
         )
-
 
     return render(
         request,
@@ -162,37 +154,32 @@ def api_lista_reservas(request):
         'fecha_reserva'
     )
 
-
     serializer = ReservaSerializer(
         reservas,
         many=True
     )
-
 
     return Response(
         serializer.data
     )
 
 
-
 @api_view(['POST'])
 def api_crear_reserva(request):
 
+    # DRF maneja automáticametne multipart data vía request.data (incluye POST y FILES)
     serializer = ReservaSerializer(
         data=request.data
     )
-
 
     if serializer.is_valid():
 
         serializer.save()
 
-
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED
         )
-
 
     return Response(
         serializer.errors,
@@ -208,7 +195,6 @@ def detalle_reserva(request, pk):
         pk=pk
     )
 
-
     if request.method == 'GET':
 
         serializer = ReservaSerializer(
@@ -219,8 +205,6 @@ def detalle_reserva(request, pk):
             serializer.data
         )
 
-
-
     if request.method == 'PUT':
 
         serializer = ReservaSerializer(
@@ -228,27 +212,22 @@ def detalle_reserva(request, pk):
             data=request.data
         )
 
-
         if serializer.is_valid():
 
             serializer.save()
 
-
             return Response(
                 serializer.data
             )
-
 
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
     if request.method == 'DELETE':
 
         reserva.delete()
-
 
         return Response(
             status=status.HTTP_204_NO_CONTENT

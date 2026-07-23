@@ -2,126 +2,117 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Reserva</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body class="container mt-5">
+<body class="bg-light">
 
-    <h1 class="mb-4">
-        Crear Nueva Reserva
-    </h1>
-
-
-    {% if errores %}
-        <div class="alert alert-danger">
-            {{ errores }}
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0 text-center fw-bold">Crear Nueva Reserva</h2>
         </div>
-    {% endif %}
 
-    <form method="POST">
+        <div class="card-body p-4">
 
-        {% csrf_token %}
+            {% if errores %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>Atención:</strong> Por favor corrige los siguientes errores:
+                    <ul class="mb-0 mt-2">
+                        {% for campo, mensaje in errores.items %}
+                            <li><strong>{{ campo }}:</strong> {{ mensaje }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
-        <div class="mb-3">
-            <label>Nombre</label>
-            <input 
-                type="text" 
-                name="nombre_persona"
-                class="form-control"
-                required>
+            <!-- AQUÍ AGREGAMOS enctype="multipart/form-data" -->
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Nombre Completo</label>
+                        <input type="text" name="nombre_persona" class="form-control" required placeholder="Ej: Juan Pérez">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Teléfono</label>
+                        <input type="text" name="telefono" class="form-control" required placeholder="+56 9 1234 5678">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Fecha Reserva</label>
+                        <input type="date" name="fecha_reserva" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Hora</label>
+                        <input type="time" name="hora_reserva" step="1" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Cantidad de Personas</label>
+                        <input type="number" name="cantidad_personas" min="1" max="15" class="form-control" required placeholder="1-15">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Estado</label>
+                        <select name="estado" class="form-select">
+                            <option value="COMPLETADA">COMPLETADA</option>
+                            <option value="ANULADA">ANULADA</option>
+                            <option value="NO ASISTEN">NO ASISTEN</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Mesa</label>
+                        <select name="mesa" class="form-select" required>
+                            <option value="">Seleccione una mesa</option>
+                            {% for mesa in mesas %}
+                                <option value="{{ mesa.id }}">
+                                    Mesa {{ mesa.numero }} - Capacidad {{ mesa.capacidad }} personas
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CAMPO NUEVO PARA SUBIR LA IMAGEN A AWS S3 -->
+                <div class="mb-3">
+                    <label for="imagen" class="form-label fw-bold">Imagen / Comprobante (Opcional)</label>
+                    <input type="file" name="imagen" id="imagen" class="form-control" accept="image/*">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Observación</label>
+                    <textarea name="observacion" class="form-control" rows="3" placeholder="Detalles o solicitudes especiales..."></textarea>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'lista_reservas' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-1"></i> Guardar Reserva
+                    </button>
+                </div>
+
+            </form>
         </div>
-        <div class="mb-3">
-            <label>Teléfono</label>
-            <input 
-                type="text" 
-                name="telefono"
-                class="form-control"
-                required>
-        </div>
-        <div class="mb-3">
-            <label>Fecha reserva</label>
-            <input 
-                type="date" 
-                name="fecha_reserva"
-                class="form-control"
-                required>
-        </div>
-        <div class="mb-3">
-            <label>Hora</label>
-            <input 
-                type="time" 
-                name="hora_reserva"
-                step="1"
-                required>
-        </div>
-        <div class="mb-3">
-            <label>Cantidad de personas</label>
-            <input 
-                type="number" 
-                name="cantidad_personas"
-                min="1"
-                max="15"
-                class="form-control"
-                required>
-        </div>
-        <div class="mb-3">
-            <label>Estado</label>
+    </div>
+</div>
 
-            <select name="estado" class="form-control">
-
-                <option value="COMPLETADA">
-                    COMPLETADA
-                </option>
-
-                <option value="ANULADA">
-                    ANULADA
-                </option>
-
-                <option value="NO ASISTEN">
-                    NO ASISTEN
-                </option>
-
-            </select>
-
-        </div>
-        <div class="mb-3">
-            <label>Mesa:</label>
-            
-            <select name="mesa" required>
-                <option value="">
-                    Seleccione una mesa
-                </option>
-                
-                {% for mesa in mesas %}
-                <option value="{{ mesa.id }}">
-                    Mesa {{ mesa.numero }} - Capacidad {{ mesa.capacidad }}
-                </option>
-
-                {% endfor %}
-
-            </select>
-
-        <div class="mb-3">
-
-            <label>Observación</label>
-
-            <textarea
-                name="observacion"
-                class="form-control">
-            </textarea>
-
-        </div>
-        <button class="btn btn-primary">
-            Guardar Reserva
-        </button>
-        <a 
-            href="{% url 'lista_reservas' %}"
-            class="btn btn-secondary">
-            Volver
-        </a>
-    </form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
