@@ -163,3 +163,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+CSRF_TRUSTED_ORIGINS = ['https://reservas-django-gd-fefnfdc7fuc0g8ev.centralus-01.azurewebsites.net']
